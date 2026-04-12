@@ -10,6 +10,10 @@ okregi_1922_mandaty = [14 5 4 4 6 4 4 5 5 5 5 6 7 6 6 7 6 5 7 5 6 5 6 6 4 6 5 5 
 %%%%%  PODSCENARIUSZ A — Lewica vs reszta  %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PZL = koalicja lewicowa (PSL-P + PSL-W + PSL-L + PPS + NPR)
+%
+% Uwaga: sumy głosów mogą nieznacznie odbiegać od 100% z powodu
+% zaokrągleń przy łączeniu list. Funkcja dhondt() normalizuje
+% wartości względnie, więc nie wpływa to na wynik podziału mandatów.
 
 partie_A      = {"ChZJN", "BMN", "PZL", "PC", "KZSN-Ż", "ZN-Ż", "ŻDBL", "Inni"};
 partie_A_dane = [29.12, 15.96, 44.20, 2.97, 2.01, 0.75, 0.61, 4.54];
