@@ -6,7 +6,9 @@
 % =========================================================
 
 clear; clc;
-run('dane_wybory1922.m');
+[sciezka, ~, ~] = fileparts(mfilename('fullpath'));
+addpath(fullfile(sciezka, '..', 'wspolne'));
+run(fullfile(sciezka, 'dane_wybory1922.m'));
 
 PROG = 5.0;  % próg wyborczy w %
 
