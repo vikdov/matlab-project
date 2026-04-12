@@ -50,7 +50,7 @@ fprintf('  Łączna liczba mandatów: %d   |   Próg większości: %d\n', ...
         total_mandatow, wiekszosc);
 fprintf('\n');
 
-fprintf('%-12s %12s %12s %12s\n', 'Partia', 'Hist.(64 okr)', '2 okręgi', '1 okrąg');
+fprintf('%-12s %12s %12s %12s\n', 'Partia', 'Hist.(64 okr)', '2 okręgi', '1 okręg');
 fprintf('%s\n', repmat('-', 1, 54));
 
 [~, idx] = sort(wyniki_hist, 'descend');
