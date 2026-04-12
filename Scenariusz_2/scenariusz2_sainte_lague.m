@@ -6,7 +6,9 @@
 % =========================================================
 
 clear; clc;
-run('dane_wybory1922.m');
+s2_dir = fileparts(mfilename('fullpath'));
+addpath(s2_dir);
+run(fullfile(s2_dir, 'dane_wybory1922.m'));
 
 n_partii  = length(partie_1922);
 n_okregow = length(okregi_1922_mandaty);

@@ -6,7 +6,9 @@
 % =========================================================
 
 clear; clc;
-run('dane_wybory1922.m');
+s2_dir = fileparts(mfilename('fullpath'));
+addpath(s2_dir);
+run(fullfile(s2_dir, 'dane_wybory1922.m'));
 
 PROG = 5.0;  % próg wyborczy w %
 
