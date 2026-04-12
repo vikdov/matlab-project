@@ -20,8 +20,7 @@ matlab-project/
 │   ├── dhondt.m                    # Metoda d'Hondta
 │   ├── sainte_lague.m              # Metoda Sainte-Laguë (czysta i zmodyfikowana)
 │   ├── adams.m                     # Metoda Adamsa
-│   ├── hamilton.m                  # Metoda Hamiltona (największych reszt)
-│   └── rozklad_mandatow_dla_okregow.m  # Helper: d'Hondt dla wielu okręgów
+│   └── hamilton.m                  # Metoda Hamiltona (największych reszt)
 │
 ├── Scenariusz_1/                   # Scenariusz koalicji przedwyborczych
 │   ├── dane_koalicje.m             # Dane trzech układów koalicyjnych (A, B, C)

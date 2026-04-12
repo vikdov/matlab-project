@@ -1,112 +1,104 @@
 % =========================================================
-% SCENARIUSZ 1 — PORÓWNANIE WSZYSTKICH PODSCENARIUSZY
-% Koalicje przedwyborcze — Wybory parlamentarne 1922
-%
-% Uruchamia podscenariusze A, B, C i zestawia mandaty
-% trzech głównych bloków na wspólnym wykresie porównawczym.
+% PORÓWNANIE WSZYSTKICH SCENARIUSZY KOALICYJNYCH A, B, C
+% Wybory parlamentarne w Polsce 1922
 % =========================================================
 
 clear; clc;
-[sciezka, ~, ~] = fileparts(mfilename('fullpath'));
-addpath(fullfile(sciezka, '..', 'wspolne'));
+addpath('../wspolne');
+run('../wspolne/dane_1922.m');
 
-run(fullfile(sciezka, 'dane_koalicje.m'));
+IDX_PRAWICA     = [1, 7, 10];
+IDX_LEWICA      = [3, 4, 5, 6, 13];
+IDX_MNIEJSZOSCI = [2, 8, 9, 11, 12, 14];
+IDX_RESZTA_A    = [1, 2, 7, 8, 9, 10, 11, 12, 14];
 
 n_okregow = length(okregi_1922_mandaty);
 
-% ---- Obliczenia dla każdego podscenariusza ----
-wyniki_A = zeros(1, length(partie_A));
-wyniki_B = zeros(1, length(partie_B));
-wyniki_C = zeros(1, length(partie_C));
+% Zbieramy mandaty dla każdego scenariusza
+mA = [0,0];        % [lewica, reszta]
+mB = [0,0,0];      % [lewica, mniejszosci, reszta(prawe)]
+mC = [0,0,0];      % [prawica, lewica, mniejszosci]
 
 for o = 1:n_okregow
-    wyniki_A = wyniki_A + dhondt(okregi_A_dane(o, :), okregi_1922_mandaty(o));
-    wyniki_B = wyniki_B + dhondt(okregi_B_dane(o, :), okregi_1922_mandaty(o));
-    wyniki_C = wyniki_C + dhondt(okregi_C_dane(o, :), okregi_1922_mandaty(o));
+    g = okregi_1922_dane(o, :);
+    m = okregi_1922_mandaty(o);
+
+    wA = dhondt([sum(g(IDX_LEWICA)), sum(g(IDX_RESZTA_A))], m);
+    mA = mA + wA;
+
+    wB = dhondt([sum(g(IDX_LEWICA)), sum(g(IDX_MNIEJSZOSCI)), sum(g(IDX_PRAWICA))], m);
+    mB = mB + wB;
+
+    wC = dhondt([sum(g(IDX_PRAWICA)), sum(g(IDX_LEWICA)), sum(g(IDX_MNIEJSZOSCI))], m);
+    mC = mC + wC;
 end
 
-total = sum(wyniki_A);
+total_A = sum(mA);
+total_B = sum(mB);
+total_C = sum(mC);
 
 % ---- Tabela zbiorcza ----
+fprintf('\n=============================================================\n');
+fprintf('  PORÓWNANIE SCENARIUSZY KOALICYJNYCH — Wybory 1922\n');
+fprintf('=============================================================\n\n');
+
+fprintf('  SCENARIUSZ A: Lewica vs Reszta\n');
+fprintf('  %-14s  %d mandatów (%.1f%%)\n', 'LEWICA',  mA(1), mA(1)/total_A*100);
+fprintf('  %-14s  %d mandatów (%.1f%%)\n', 'RESZTA',  mA(2), mA(2)/total_A*100);
+fprintf('  Większość: %d | Próg: %d\n\n', floor(total_A/2)+1, floor(total_A/2)+1);
+
+fprintf('  SCENARIUSZ B: Lewica vs Mniejszości vs Reszta (prawicowa)\n');
+fprintf('  %-14s  %d mandatów (%.1f%%)\n', 'LEWICA',       mB(1), mB(1)/total_B*100);
+fprintf('  %-14s  %d mandatów (%.1f%%)\n', 'MNIEJSZOŚCI',  mB(2), mB(2)/total_B*100);
+fprintf('  %-14s  %d mandatów (%.1f%%)\n', 'PRAWICA',      mB(3), mB(3)/total_B*100);
+fprintf('  Potencjalna koalicja Lewica+Mniejszości: %d mandatów', mB(1)+mB(2));
+if mB(1)+mB(2) >= floor(total_B/2)+1, fprintf(' ✓ WIĘKSZOŚĆ'); end
+fprintf('\n\n');
+
+fprintf('  SCENARIUSZ C: Prawica vs Lewica vs Mniejszości\n');
+fprintf('  %-14s  %d mandatów (%.1f%%)\n', 'PRAWICA',      mC(1), mC(1)/total_C*100);
+fprintf('  %-14s  %d mandatów (%.1f%%)\n', 'LEWICA',       mC(2), mC(2)/total_C*100);
+fprintf('  %-14s  %d mandatów (%.1f%%)\n', 'MNIEJSZOŚCI',  mC(3), mC(3)/total_C*100);
+fprintf('  Potencjalna koalicja Prawica+Mniejszości: %d mandatów', mC(1)+mC(3));
+if mC(1)+mC(3) >= floor(total_C/2)+1, fprintf(' ✓ WIĘKSZOŚĆ'); end
 fprintf('\n');
-fprintf('=======================================================================\n');
-fprintf('  SCENARIUSZ 1: PORÓWNANIE PODSCENARIUSZY KOALICYJNYCH\n');
-fprintf('  Wybory parlamentarne w Polsce 1922\n');
-fprintf('=======================================================================\n');
+fprintf('  Potencjalna koalicja Lewica+Mniejszości:  %d mandatów', mC(2)+mC(3));
+if mC(2)+mC(3) >= floor(total_C/2)+1, fprintf(' ✓ WIĘKSZOŚĆ'); end
+fprintf('\n\n');
 
-fprintf('\n--- Podscenariusz A: Koalicja lewicy (PZL) vs reszta ---\n');
-fprintf('%-14s %8s %10s\n', 'Koalicja/Partia', 'Mandaty', 'Głosy %');
-fprintf('%s\n', repmat('-', 1, 36));
-[ws, id] = sort(wyniki_A, 'descend');
-for i = 1:length(partie_A)
-    if ws(i) > 0
-        fprintf('%-14s %8d %9.2f%%\n', partie_A{id(i)}, ws(i), partie_A_dane(id(i)));
-    end
-end
+% ---- Wykres zbiorczy ----
+figure('Name', 'Porównanie scenariuszy koalicyjnych A B C', ...
+       'NumberTitle', 'off', 'Position', [50 50 1300 500]);
 
-fprintf('\n--- Podscenariusz B: PZL vs Mniejszości (WMN) vs reszta ---\n');
-fprintf('%-14s %8s %10s\n', 'Koalicja/Partia', 'Mandaty', 'Głosy %');
-fprintf('%s\n', repmat('-', 1, 36));
-[ws, id] = sort(wyniki_B, 'descend');
-for i = 1:length(partie_B)
-    if ws(i) > 0
-        fprintf('%-14s %8d %9.2f%%\n', partie_B{id(i)}, ws(i), partie_B_dane(id(i)));
-    end
-end
+kolory_blokow = struct();
+kolory_blokow.lewica     = [0.85 0.15 0.15];
+kolory_blokow.prawica    = [0.15 0.25 0.75];
+kolory_blokow.mniejszosci= [0.20 0.65 0.30];
+kolory_blokow.reszta     = [0.55 0.55 0.55];
 
-fprintf('\n--- Podscenariusz C: Prawica (PJN) vs Lewica (PZL) vs Mniejszości (WMN) ---\n');
-fprintf('%-14s %8s %10s\n', 'Koalicja', 'Mandaty', 'Głosy %');
-fprintf('%s\n', repmat('-', 1, 36));
-[ws, id] = sort(wyniki_C, 'descend');
-for i = 1:length(partie_C)
-    fprintf('%-14s %8d %9.2f%%\n', partie_C{id(i)}, ws(i), partie_C_dane(id(i)));
-end
+% Scenariusz A
+subplot(1,3,1);
+pie_data_A = [mA(1), mA(2)];
+pie_h = pie(pie_data_A);
+colormap([kolory_blokow.lewica; kolory_blokow.reszta]);
+legend({'Lewica', 'Reszta'}, 'Location', 'southoutside', 'FontSize', 9);
+title({'Scenariusz A', sprintf('Lewica: %d | Reszta: %d', mA(1), mA(2))}, 'FontSize', 11);
 
-fprintf('\nŁącznie mandatów: %d\n', total);
+% Scenariusz B
+subplot(1,3,2);
+pie([mB(1), mB(2), mB(3)]);
+colormap([kolory_blokow.lewica; kolory_blokow.mniejszosci; kolory_blokow.prawica]);
+legend({'Lewica', 'Mniejszości', 'Prawica'}, 'Location', 'southoutside', 'FontSize', 9);
+title({'Scenariusz B', sprintf('L:%d | M:%d | P:%d', mB(1), mB(2), mB(3))}, 'FontSize', 11);
 
-% ---- Wykres porównawczy: udział % lewicy, prawicy i mniejszości ----
-% Mandaty lewicowych ugrupowań (PZL) w każdym scenariuszu
-pzl_A = wyniki_A(strcmp(partie_A, 'PZL'));
-pzl_B = wyniki_B(strcmp(partie_B, 'PZL'));
-pzl_C = wyniki_C(strcmp(partie_C, 'PZL'));
+% Scenariusz C
+subplot(1,3,3);
+pie([mC(1), mC(2), mC(3)]);
+colormap([kolory_blokow.prawica; kolory_blokow.lewica; kolory_blokow.mniejszosci]);
+legend({'Prawica', 'Lewica', 'Mniejszości'}, 'Location', 'southoutside', 'FontSize', 9);
+title({'Scenariusz C', sprintf('P:%d | L:%d | M:%d', mC(1), mC(2), mC(3))}, 'FontSize', 11);
 
-wmn_A = 0;  % WMN nie istnieje jako blok w A
-wmn_B = wyniki_B(strcmp(partie_B, 'WMN'));
-wmn_C = wyniki_C(strcmp(partie_C, 'WMN'));
+sgtitle({'Porównanie scenariuszy koalicyjnych A, B, C', ...
+         'Wybory parlamentarne w Polsce 1922'}, 'FontSize', 13);
 
-pjn_A = 0;  % PJN nie istnieje jako blok w A
-pjn_B = 0;
-pjn_C = wyniki_C(strcmp(partie_C, 'PJN'));
-
-% Prawica/centrum w podscenariuszach A i B (ChZJN + PC)
-chzjn_A = wyniki_A(strcmp(partie_A, 'ChZJN'));
-chzjn_B = wyniki_B(strcmp(partie_B, 'ChZJN'));
-
-figure('Name', 'Scenariusz 1 — Porównanie podscenariuszy', ...
-       'NumberTitle', 'off', 'Position', [50 50 1100 620]);
-
-dane_plot = [
-    pzl_A,   wmn_A,   chzjn_A, total - pzl_A - wmn_A - chzjn_A;
-    pzl_B,   wmn_B,   chzjn_B, total - pzl_B - wmn_B - chzjn_B;
-    pzl_C,   wmn_C,   pjn_C,   total - pzl_C - wmn_C - pjn_C;
-];
-
-b = bar(dane_plot, 'stacked');
-bar_colors = [0.20 0.45 0.75;   % lewica — niebieski
-              0.20 0.70 0.30;   % mniejszości — zielony
-              0.85 0.20 0.20;   % prawica/centrum — czerwony
-              0.80 0.80 0.80];  % pozostałe — szary
-for i = 1:min(numel(b), size(bar_colors, 1))
-    set(b(i), 'FaceColor', bar_colors(i, :));
-end
-
-xticklabels({'Podscenariusz A', 'Podscenariusz B', 'Podscenariusz C'});
-legend({'Lewica (PZL)', 'Mniejszości (WMN)', 'Prawica/centrum', 'Pozostałe'}, ...
-       'Location', 'northeast', 'FontSize', 10);
-ylabel('Liczba mandatów');
-title({'Scenariusz 1: Porównanie układów koalicyjnych', ...
-       'Wybory parlamentarne w Polsce 1922'}, 'FontSize', 13);
-grid on;
-ylim([0 total * 1.05]);
-
-fprintf('\nPorównanie wszystkich podscenariuszy zakończone.\n');
+fprintf('Porównanie zakończone.\n');

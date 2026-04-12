@@ -1,35 +1,49 @@
 % =========================================================
-% DANE OKRĘGÓW — Wybory parlamentarne w Polsce 1922
-% Używane przez podscenariusze A i B (Scenariusz 3)
+% DANE OKRĘGÓW — Scenariusz 3
+% Plik: Scenariusz_3/dane_okregi.m
 %
-% Podscenariusz A: dwa duże okręgi — Polska "A" (centrum/zachód)
-%                  i Polska "B" (wschód/kresy)
-% Podscenariusz B: jeden ogólnokrajowy okrąg wyborczy
+% Definiuje podział 64 okręgów wyborczych z 1922 roku
+% na dwa makrookręgi według kryterium zaborowego:
 %
-% Kolumny odpowiadają partiom z dane_1922.m:
-% ChZJN, BMN, PSL-P, PSL-W, PPS, NPR, PC, KZSN-Ż, KZPMiW,
-% ChSR, Bund, ZN-Ż, PSL-L, ŻDBL, Inni
+%   POLSKA "A" — okręgi 1–40
+%     Kongresówka (zabór rosyjski, centralna Polska)
+%     + zabór pruski (Wielkopolska, Pomorze)
+%     + Kresy północno-zachodnie (Wilno, Grodno, Nowogródek)
+%
+%   POLSKA "B" — okręgi 41–64
+%     Galicja (zabór austriacki: Lwów, Kraków, Rzeszów)
+%     + Kresy wschodnie (Wołyń, Polesie)
+%
+% Podział oparty na historycznym układzie okręgów
+% wyborczych Sejmu Ustawodawczego z 1922 r.
 % =========================================================
 
-%-------------------------------------------------------
-% PODSCENARIUSZ A — dwa okręgi (Polska A i Polska B)
-%-------------------------------------------------------
-% Okrąg 1 (Polska A): okręgi centralne i zachodnie — 204 mandaty
-% Okrąg 2 (Polska B): okręgi wschodnie i kresowe — 168 mandatów
+% Indeksy okręgów należących do każdego makrookręgu
+IDX_POLSKA_A = 1:40;   % Kongresówka + zabór pruski + Kresy północno-zachodnie
+IDX_POLSKA_B = 41:64;  % Galicja + Kresy wschodnie + Wołyń
 
-okregi_AB_mandaty = [204, 168];
+% Nazwy okręgów (dla etykiet na wykresach)
+nazwy_okregow = {
+    'Warszawa m.',  'Warszawa okr.', 'Łódź',         'Kalisz',       ...  % 1-4
+    'Kielce',       'Lublin',        'Piotrków',      'Płock',        ...  % 5-8
+    'Radom',        'Siedlce',       'Suwałki',       'Białystok',    ...  % 9-12
+    'Wilno',        'Grodno',        'Brześć n/B',    'Łomża',        ...  % 13-16
+    'Nowogródek',   'Poznań',        'Bydgoszcz',     'Gniezno',      ...  % 17-20
+    'Inowrocław',   'Leszno',        'Ostrów Wlkp',   'Szamotuły',    ...  % 21-24
+    'Śrem',         'Wągrowiec',     'Toruń',         'Chełmno',      ...  % 25-28
+    'Gdańsk okr',   'Grudziądz',     'Starogard',     'Tczew',        ...  % 29-32
+    'Wąbrzeźno',    'Świecie',       'Chojnice',      'Działdowo',    ...  % 33-36
+    'Sierpc',       'Brodnica',      'Rypin',         'Nieszawa',     ...  % 37-40
+    'Lwów m.',      'Lwów okr.',     'Bóbrka',        'Brody',        ...  % 41-44
+    'Drohobycz',    'Gródek Jag.',   'Jaworów',       'Kołomyja',     ...  % 45-48
+    'Przemyśl',     'Rzeszów',       'Sambor',        'Sanok',        ...  % 49-52
+    'Stryj',        'Tarnopol',      'Złoczów',       'Kraków',       ...  % 53-56
+    'Bochnia',      'Chrzanów',      'Nowy Sącz',     'Tarnów',       ...  % 57-60
+    'Stanisławów',  'Równe',         'Łuck',          'Poleskie'      ...  % 61-64
+};
 
-% Wyniki uśrednione ważone głosami dla każdego z dwóch makrookręgów
-okregi_AB_dane = [
-    37.51, 12.61, 10.74,  9.42, 11.46,  9.61, 2.71, 0.00, 1.32, 0.33, 0.62, 1.32, 0.26, 0.34, 1.75;
-    19.45, 20.59, 15.95, 12.36,  8.18,  0.25, 3.00, 5.62, 0.83, 2.55, 1.03, 0.27, 1.10, 0.57, 6.04;
-];
-
-%-------------------------------------------------------
-% PODSCENARIUSZ B — jeden okrąg ogólnokrajowy
-%-------------------------------------------------------
-% Cała Polska jako jeden okrąg wyborczy — 372 mandaty
-
-okrag_PL_mandaty = [372];
-
-okrag_PL_dane = [29.32, 16.22, 13.10, 10.75, 9.98, 5.37, 2.84, 2.55, 1.10, 1.34, 0.80, 0.85, 0.64, 0.44, 3.50];
+fprintf('  Dane okręgów załadowane.\n');
+fprintf('  Polska A: okręgi %d–%d (%d okręgów)\n', ...
+    IDX_POLSKA_A(1), IDX_POLSKA_A(end), length(IDX_POLSKA_A));
+fprintf('  Polska B: okręgi %d–%d (%d okręgów)\n', ...
+    IDX_POLSKA_B(1), IDX_POLSKA_B(end), length(IDX_POLSKA_B));

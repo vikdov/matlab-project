@@ -1,77 +1,142 @@
 % =========================================================
-% SCENARIUSZ 1 — PODSCENARIUSZ C
-% Koalicja prawicy vs Koalicja lewicy vs Koalicja mniejszości
+% SCENARIUSZ KOALICJI C
+% PRAWICA vs LEWICA vs MNIEJSZOŚCI NARODOWE
 %
-% PJN = koalicja prawicowo-centrowa (ChZJN + PC + NPR + inne)
-% PZL = zjednoczona lewica (PSL-P + PSL-W + PSL-L + PPS)
-% WMN = zjednoczone mniejszości narodowe
+% PRAWICA:     ChZJN(1), PC(7), ChSR(10)
+% LEWICA:      PPS(5), NPR(6), PSL-P(3), PSL-W(4), PSL-L(13)
+% MNIEJSZOŚCI: BMN(2), KZSN-Ż(8), KZPMiW(9), Bund(11), ZN-Ż(12), ŻDBL(14)
+%
+% Głosy "Inni" (kolumna 15) są pomijane.
+% Mandaty liczone metodą D'Hondta okręgowo.
 % =========================================================
 
 clear; clc;
-[sciezka, ~, ~] = fileparts(mfilename('fullpath'));
-addpath(fullfile(sciezka, '..', 'wspolne'));
+addpath('../wspolne');
+run('../wspolne/dane_1922.m');
 
-run(fullfile(sciezka, 'dane_koalicje.m'));
+IDX_PRAWICA     = [1, 7, 10];
+IDX_LEWICA      = [3, 4, 5, 6, 13];
+IDX_MNIEJSZOSCI = [2, 8, 9, 11, 12, 14];
 
-n_partii  = length(partie_C);
 n_okregow = length(okregi_1922_mandaty);
 
-wyniki = zeros(1, n_partii);
+% [prawica, lewica, mniejszosci]
+mandaty_bloki = [0, 0, 0];
+
 for o = 1:n_okregow
-    wyniki = wyniki + dhondt(okregi_C_dane(o, :), okregi_1922_mandaty(o));
+    g = okregi_1922_dane(o, :);
+    m = okregi_1922_mandaty(o);
+
+    glosy_bloki = [sum(g(IDX_PRAWICA)), sum(g(IDX_LEWICA)), sum(g(IDX_MNIEJSZOSCI))];
+    wynik = dhondt(glosy_bloki, m);
+    mandaty_bloki = mandaty_bloki + wynik;
 end
 
-total = sum(wyniki);
+total = sum(mandaty_bloki);
 
-% ---- Wyświetlenie wyników ----
+% ---- Wyniki ----
 fprintf('\n========================================================\n');
-fprintf('  SCENARIUSZ 1 — PODSCENARIUSZ C\n');
-fprintf('  Koalicja prawicy (PJN) vs lewicy (PZL) vs mniejszości (WMN)\n');
+fprintf('  SCENARIUSZ C: PRAWICA vs LEWICA vs MNIEJSZOSCI\n');
 fprintf('  Wybory parlamentarne w Polsce 1922\n');
-fprintf('========================================================\n');
-fprintf('%-14s %8s %10s %10s\n', 'Koalicja', 'Mandaty', 'Udział %', 'Głosy %');
-fprintf('%s\n', repmat('-', 1, 48));
+fprintf('========================================================\n\n');
 
-[wyniki_sort, idx] = sort(wyniki, 'descend');
-for i = 1:n_partii
-    fprintf('%-14s %8d %9.2f%% %9.2f%%\n', ...
-        partie_C{idx(i)}, wyniki_sort(i), ...
-        wyniki_sort(i) / total * 100, partie_C_dane(idx(i)));
+fprintf('  Skład bloków:\n');
+fprintf('  PRAWICA     : ChZJN, PC, ChSR\n');
+fprintf('  LEWICA      : PSL-P, PSL-W, PPS, NPR, PSL-L\n');
+fprintf('  MNIEJSZOŚCI : BMN, KZSN-Ż, KZPMiW, Bund, ZN-Ż, ŻDBL\n\n');
+
+nazwy_blokow = {'PRAWICA', 'LEWICA', 'MNIEJSZOŚCI'};
+idx_blokow   = {IDX_PRAWICA, IDX_LEWICA, IDX_MNIEJSZOSCI};
+
+sum_glosy = 0;
+for b = 1:3
+    sum_glosy = sum_glosy + sum(partie_1922_dane(idx_blokow{b}));
 end
-fprintf('%s\n', repmat('-', 1, 48));
-fprintf('%-14s %8d %9.2f%%\n', 'ŁĄCZNIE', total, 100.0);
 
-% ---- Wykres słupkowy ----
-figure('Name', 'Scenariusz 1C — Trzy koalicje', ...
-       'NumberTitle', 'off', 'Position', [50 50 800 560]);
+fprintf('%-14s %10s %12s %12s %12s\n', 'Blok', 'Mandaty', 'Mandaty %', 'Głosy %', 'Premia pp');
+fprintf('%s\n', repmat('-', 1, 62));
 
-[~, srt] = sort(wyniki, 'descend');
-nazwy_s = partie_C(srt);
-val_s   = wyniki(srt);
-glosy_s = partie_C_dane(srt);
+for b = 1:3
+    g_kraj = sum(partie_1922_dane(idx_blokow{b}));
+    g_pct  = g_kraj / sum_glosy * 100;
+    m_pct  = mandaty_bloki(b) / total * 100;
+    prem   = m_pct - g_pct;
+    fprintf('%-14s %10d %11.2f%% %11.2f%% %+11.2f\n', ...
+        nazwy_blokow{b}, mandaty_bloki(b), m_pct, g_pct, prem);
+end
 
-x = 1:length(nazwy_s);
-b = bar(x, [val_s' glosy_s' / sum(glosy_s) * total]);
-b(1).FaceColor = [0.20 0.45 0.75];
-b(2).FaceColor = [0.85 0.55 0.20];
-xticks(x);
-xticklabels(nazwy_s);
-ylabel('Liczba mandatów');
-xlabel('Koalicja');
-legend({'Mandaty (d''Hondt)', 'Proporcjonalny wzorzec'}, 'Location', 'northeast', 'FontSize', 10);
-title({'Scenariusz 1C: Prawica (PJN) vs Lewica (PZL) vs Mniejszości (WMN)', ...
-       'Wybory parlamentarne w Polsce 1922 — rozkład mandatów'}, 'FontSize', 12);
+fprintf('%s\n', repmat('-', 1, 62));
+fprintf('%-14s %10d %11.2f%%\n', 'ŁĄCZNIE', total, 100.0);
+
+% ---- Wykres ----
+figure('Name', 'Scenariusz C', 'NumberTitle', 'off', 'Position', [100 100 1100 600]);
+
+kolory = [0.15 0.25 0.70;   % prawica - granatowy
+          0.85 0.15 0.15;   % lewica  - czerwony
+          0.20 0.60 0.30];  % mniejszości - zielony
+
+subplot(1,3,1);
+pie(mandaty_bloki);
+colormap(kolory);
+legend(nazwy_blokow, 'Location', 'southoutside', 'FontSize', 9);
+title('Podział mandatów');
+
+subplot(1,3,2);
+glosy_pct = zeros(1,3);
+for b = 1:3
+    glosy_pct(b) = sum(partie_1922_dane(idx_blokow{b})) / sum_glosy * 100;
+end
+mand_pct = mandaty_bloki / total * 100;
+
+x = 1:3;
+b_h = bar(x, [glosy_pct' mand_pct']);
+b_h(1).FaceColor = [0.6 0.6 0.6];
+b_h(2).FaceColor = [0.3 0.3 0.8];
+xticks(x); xticklabels(nazwy_blokow); xtickangle(15);
+legend({'Głosy %', 'Mandaty %'}, 'Location', 'north');
+ylabel('%');
+title('Głosy vs Mandaty');
 grid on;
 
-% ---- Wykres kołowy ----
-figure('Name', 'Scenariusz 1C — Podział mandatów (kołowy)', ...
-       'NumberTitle', 'off', 'Position', [100 100 800 580]);
+subplot(1,3,3);
+premia = mand_pct - glosy_pct;
+b_p = bar(x, premia);
+b_p.FaceColor = 'flat';
+for b = 1:3
+    if premia(b) >= 0
+        b_p.CData(b,:) = [0.2 0.7 0.2];
+    else
+        b_p.CData(b,:) = [0.8 0.2 0.2];
+    end
+end
+xticks(x); xticklabels(nazwy_blokow); xtickangle(15);
+yline(0, 'k-', 'LineWidth', 1.2);
+ylabel('Premia/strata (pp)');
+title('Premia proporcjonalności');
+grid on;
 
-colors_C = [0.85 0.20 0.20; 0.20 0.55 0.85; 0.20 0.70 0.30];
-pie(val_s);
-colormap(colors_C);
-legend(nazwy_s, 'Location', 'eastoutside', 'FontSize', 11);
-title({'Scenariusz 1C: Podział mandatów — trzy koalicje', ...
-       'Wybory parlamentarne w Polsce 1922'}, 'FontSize', 12);
+sgtitle({'Scenariusz C: Prawica vs Lewica vs Mniejszości Narodowe', 'Wybory 1922'}, 'FontSize', 13);
 
-fprintf('\nPodscenariusz C zakończony.\n');
+% ---- Analiza możliwości koalicyjnych ----
+fprintf('\n--- Możliwości tworzenia większości (>%d mandatów) ---\n', floor(total/2));
+prog_wiekszosci = floor(total/2) + 1;
+
+fprintf('\n  Koalicja Prawica + Lewica     : %d mandatów', mandaty_bloki(1)+mandaty_bloki(2));
+if mandaty_bloki(1)+mandaty_bloki(2) >= prog_wiekszosci
+    fprintf('  ✓ WIĘKSZOŚĆ');
+end
+fprintf('\n');
+
+fprintf('  Koalicja Prawica + Mniejszości: %d mandatów', mandaty_bloki(1)+mandaty_bloki(3));
+if mandaty_bloki(1)+mandaty_bloki(3) >= prog_wiekszosci
+    fprintf('  ✓ WIĘKSZOŚĆ');
+end
+fprintf('\n');
+
+fprintf('  Koalicja Lewica + Mniejszości : %d mandatów', mandaty_bloki(2)+mandaty_bloki(3));
+if mandaty_bloki(2)+mandaty_bloki(3) >= prog_wiekszosci
+    fprintf('  ✓ WIĘKSZOŚĆ');
+end
+fprintf('\n');
+
+fprintf('\nScenariusz C zakończony.\n');
