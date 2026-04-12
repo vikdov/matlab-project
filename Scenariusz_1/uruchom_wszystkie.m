@@ -92,10 +92,13 @@ dane_plot = [
 ];
 
 b = bar(dane_plot, 'stacked');
-b(1).FaceColor = [0.20 0.45 0.75];  % lewica — niebieski
-b(2).FaceColor = [0.20 0.70 0.30];  % mniejszości — zielony
-b(3).FaceColor = [0.85 0.20 0.20];  % prawica/centrum — czerwony
-b(4).FaceColor = [0.80 0.80 0.80];  % pozostałe — szary
+bar_colors = [0.20 0.45 0.75;   % lewica — niebieski
+              0.20 0.70 0.30;   % mniejszości — zielony
+              0.85 0.20 0.20;   % prawica/centrum — czerwony
+              0.80 0.80 0.80];  % pozostałe — szary
+for i = 1:min(numel(b), size(bar_colors, 1))
+    set(b(i), 'FaceColor', bar_colors(i, :));
+end
 
 xticklabels({'Podscenariusz A', 'Podscenariusz B', 'Podscenariusz C'});
 legend({'Lewica (PZL)', 'Mniejszości (WMN)', 'Prawica/centrum', 'Pozostałe'}, ...
