@@ -1,98 +1,81 @@
 % =========================================================
 % SCENARIUSZ KOALICJI A
-% Koalicja LEWICA vs RESZTA PARTII
+% Koalicja LEWICA vs pozostałe partie osobno
+% Plik: Scenariusz_1/scenariuszA_lewica_vs_reszta.m
 %
-% LEWICA:  PPS(5), NPR(6), PSL-P(3), PSL-W(4), PSL-L(13)
-% PRAWICA: ChZJN(1), PC(7), ChSR(10)
-% CENTRUM: pozostałe partie (bez mniejszości i bez "Inni")
-%   czyli: BMN(2), KZSN-Ż(8), KZPMiW(9), Bund(11), ZN-Ż(12), ŻDBL(14)
-%   traktowane jako "RESZTA" razem z prawicą
-%
-% Głosy "Inni" (kolumna 15) są pomijane (zerowane).
-% Mandaty liczone metodą D'Hondta okręgowo.
+% LEWICA (wspólna lista): PPS(5), NPR(6), PSL-P(3), PSL-W(4), PSL-L(13)
+% POZOSTAŁE partie startują każda osobno:
+%   ChZJN(1), BMN(2), PC(7), KZSN-Ż(8), KZPMiW(9), ChSR(10),
+%   Bund(11), ZN-Ż(12), ŻDBL(14)
+% Głosy "Inni" (kol. 15) pomijane.
+% Mandaty: D'Hondt okręgowo.
 % =========================================================
 
 clear; clc;
 addpath('../wspolne');
 run('../wspolne/dane_1922.m');
 
-% ---- Definicja bloków (indeksy kolumn w macierzy danych) ----
-% partie_1922 = {ChZJN,BMN,PSL-P,PSL-W,PPS,NPR,PC,KZSN-Ż,KZPMiW,ChSR,Bund,ZN-Ż,PSL-L,ŻDBL,Inni}
-%                  1    2    3    4    5    6   7    8      9     10   11   12   13    14   15
+IDX_LEWICA    = [3, 4, 5, 6, 13];
+IDX_POZOSTALE = [1, 2, 7, 8, 9, 10, 11, 12, 14];
 
-IDX_LEWICA  = [3, 4, 5, 6, 13];   % PSL-P, PSL-W, PPS, NPR, PSL-L
-IDX_RESZTA  = [1, 2, 7, 8, 9, 10, 11, 12, 14];  % ChZJN, BMN, PC, KZSN-Ż, KZPMiW, ChSR, Bund, ZN-Ż, ŻDBL
-IDX_INNI    = 15;  % pomijamy
-
-n_okregow = length(okregi_1922_mandaty);
-
-mandaty_lewica = 0;
-mandaty_reszta = 0;
+n_partii_plot = 1 + length(IDX_POZOSTALE);
+n_okregow     = length(okregi_1922_mandaty);
+etykiety      = [{'LEWICA (blok)'}, partie_1922(IDX_POZOSTALE)];
+wyniki        = zeros(1, n_partii_plot);
 
 for o = 1:n_okregow
     g = okregi_1922_dane(o, :);
     m = okregi_1922_mandaty(o);
-
-    glosy_bloki = [sum(g(IDX_LEWICA)), sum(g(IDX_RESZTA))];
-    wynik = dhondt(glosy_bloki, m);
-
-    mandaty_lewica = mandaty_lewica + wynik(1);
-    mandaty_reszta = mandaty_reszta + wynik(2);
+    glosy_bloki = [sum(g(IDX_LEWICA)), g(IDX_POZOSTALE)];
+    wyniki = wyniki + dhondt(glosy_bloki, m);
 end
 
-total = mandaty_lewica + mandaty_reszta;
+total = sum(wyniki);
+glosy_kraj_bloki = [sum(partie_1922_dane(IDX_LEWICA)), partie_1922_dane(IDX_POZOSTALE)];
+suma_glosy       = sum(glosy_kraj_bloki);
 
-% ---- Wyniki ----
+% ---- Konsola ----
 fprintf('\n========================================================\n');
-fprintf('  SCENARIUSZ A: LEWICA vs RESZTA\n');
+fprintf('  SCENARIUSZ A: LEWICA (blok) vs pozostale partie\n');
 fprintf('  Wybory parlamentarne w Polsce 1922\n');
 fprintf('========================================================\n\n');
-
-fprintf('  Skład bloków:\n');
-fprintf('  LEWICA : PSL-P, PSL-W, PPS, NPR, PSL-L\n');
-fprintf('  RESZTA : ChZJN, BMN, PC, KZSN-Ż, KZPMiW, ChSR, Bund, ZN-Ż, ŻDBL\n\n');
-
-fprintf('%-12s %10s %12s %12s\n', 'Blok', 'Mandaty', 'Udział %', 'Głosy %');
-fprintf('%s\n', repmat('-', 1, 48));
-
-glosy_lewica_kraj = sum(partie_1922_dane(IDX_LEWICA));
-glosy_reszta_kraj = sum(partie_1922_dane(IDX_RESZTA));
-
-fprintf('%-12s %10d %11.2f%% %11.2f%%\n', 'LEWICA',  mandaty_lewica, mandaty_lewica/total*100, glosy_lewica_kraj);
-fprintf('%-12s %10d %11.2f%% %11.2f%%\n', 'RESZTA',  mandaty_reszta, mandaty_reszta/total*100, glosy_reszta_kraj);
-fprintf('%s\n', repmat('-', 1, 48));
-fprintf('%-12s %10d %11.2f%%\n', 'ŁĄCZNIE', total, 100.0);
-
-fprintf('\n  Premia/strata proporcjonalności:\n');
-prem_lew = mandaty_lewica/total*100 - glosy_lewica_kraj/(glosy_lewica_kraj+glosy_reszta_kraj)*100;
-fprintf('  LEWICA : %+.2f pp\n', prem_lew);
-fprintf('  RESZTA : %+.2f pp\n', -prem_lew);
+fprintf('  Sklad koalicji lewicowej: PSL-P, PSL-W, PPS, NPR, PSL-L\n\n');
+fprintf('%-16s %8s %10s %10s %10s\n', 'Partia/Blok', 'Mandaty', 'Mand.%', 'Glosy%', 'Premia pp');
+fprintf('%s\n', repmat('-', 1, 58));
+[~, srt] = sort(wyniki, 'descend');
+for i = 1:n_partii_plot
+    k     = srt(i);
+    m_pct = wyniki(k)/total*100;
+    g_pct = glosy_kraj_bloki(k)/suma_glosy*100;
+    marker = ''; if k==1, marker=' << koalicja'; end
+    fprintf('%-16s %8d %9.2f%% %9.2f%% %+9.2f%s\n', ...
+        etykiety{k}, wyniki(k), m_pct, g_pct, m_pct-g_pct, marker);
+end
+fprintf('%s\n', repmat('-', 1, 58));
+fprintf('%-16s %8d\n', 'LACZNIE', total);
 
 % ---- Wykres ----
-figure('Name', 'Scenariusz A: Lewica vs Reszta', 'NumberTitle', 'off', 'Position', [100 100 800 550]);
+figure('Name','Scenariusz A','NumberTitle','off','Position',[50 50 1200 600]);
 
-subplot(1,2,1);
-pie([mandaty_lewica, mandaty_reszta]);
-legend({'LEWICA', 'RESZTA'}, 'Location', 'southoutside');
-title('Podział mandatów');
-colormap([0.85 0.15 0.15; 0.20 0.45 0.70]);
+[wyniki_sort, srt2] = sort(wyniki, 'descend');
+etyk_sort  = etykiety(srt2);
+glosy_sort = glosy_kraj_bloki(srt2)/suma_glosy*100;
+mand_sort  = wyniki_sort/total*100;
+kolory = repmat([0.45 0.55 0.75], n_partii_plot, 1);
+kolory(find(srt2==1), :) = [0.85 0.15 0.15];
 
-subplot(1,2,2);
-bloki   = {'LEWICA', 'RESZTA'};
-mandaty = [mandaty_lewica, mandaty_reszta];
-glosy   = [glosy_lewica_kraj, glosy_reszta_kraj] / (glosy_lewica_kraj+glosy_reszta_kraj) * 100;
-mand_pct = mandaty / total * 100;
+subplot(2,1,1);
+b = bar(1:n_partii_plot, wyniki_sort);
+b.FaceColor = 'flat'; b.CData = kolory;
+xticks(1:n_partii_plot); xticklabels(etyk_sort); xtickangle(40);
+ylabel('Mandaty'); title('Mandaty — Lewica (blok) vs pozostale partie','FontSize',11); grid on;
 
-x = 1:2;
-bar_h = bar(x, [glosy' mand_pct']);
-bar_h(1).FaceColor = [0.6 0.6 0.6];
-bar_h(2).FaceColor = [0.2 0.6 0.2];
-xticks(x); xticklabels(bloki);
-legend({'Głosy %', 'Mandaty %'}, 'Location', 'north');
-ylabel('%');
-title('Głosy vs Mandaty');
-grid on;
+subplot(2,1,2);
+bh = bar(1:n_partii_plot, [glosy_sort' mand_sort']);
+bh(1).FaceColor=[0.65 0.65 0.65]; bh(2).FaceColor=[0.25 0.65 0.25];
+xticks(1:n_partii_plot); xticklabels(etyk_sort); xtickangle(40);
+legend({'Glosy %','Mandaty %'},'Location','northeast');
+ylabel('%'); title('Glosy vs Mandaty','FontSize',11); grid on;
 
-sgtitle({'Scenariusz A: Koalicja Lewicy vs Reszta', 'Wybory 1922'}, 'FontSize', 13);
-
-fprintf('\nScenariusz A zakończony.\n');
+sgtitle({'Scenariusz A: Koalicja Lewicy vs pozostale partie','Wybory 1922'},'FontSize',13);
+fprintf('\nScenariusz A zakonczony.\n');
