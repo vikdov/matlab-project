@@ -78,23 +78,27 @@ kolory_blokow.reszta     = [0.55 0.55 0.55];
 
 % Scenariusz A
 subplot(1,3,1);
-pie_data_A = [mA(1), mA(2)];
-pie_h = pie(pie_data_A);
-colormap([kolory_blokow.lewica; kolory_blokow.reszta]);
+pie_h = pie([mA(1), mA(2)]);
+pie_h(1).FaceColor = kolory_blokow.lewica;
+pie_h(3).FaceColor = kolory_blokow.reszta;
 legend({'Lewica', 'Reszta'}, 'Location', 'southoutside', 'FontSize', 9);
 title({'Scenariusz A', sprintf('Lewica: %d | Reszta: %d', mA(1), mA(2))}, 'FontSize', 11);
 
 % Scenariusz B
 subplot(1,3,2);
-pie([mB(1), mB(2), mB(3)]);
-colormap([kolory_blokow.lewica; kolory_blokow.mniejszosci; kolory_blokow.prawica]);
+pie_h = pie([mB(1), mB(2), mB(3)]);
+pie_h(1).FaceColor = kolory_blokow.lewica;
+pie_h(3).FaceColor = kolory_blokow.mniejszosci;
+pie_h(5).FaceColor = kolory_blokow.prawica;
 legend({'Lewica', 'Mniejszości', 'Prawica'}, 'Location', 'southoutside', 'FontSize', 9);
 title({'Scenariusz B', sprintf('L:%d | M:%d | P:%d', mB(1), mB(2), mB(3))}, 'FontSize', 11);
 
 % Scenariusz C
 subplot(1,3,3);
-pie([mC(1), mC(2), mC(3)]);
-colormap([kolory_blokow.prawica; kolory_blokow.lewica; kolory_blokow.mniejszosci]);
+pie_h = pie([mC(1), mC(2), mC(3)]);
+pie_h(1).FaceColor = kolory_blokow.prawica;
+pie_h(3).FaceColor = kolory_blokow.lewica;
+pie_h(5).FaceColor = kolory_blokow.mniejszosci;
 legend({'Prawica', 'Lewica', 'Mniejszości'}, 'Location', 'southoutside', 'FontSize', 9);
 title({'Scenariusz C', sprintf('P:%d | L:%d | M:%d', mC(1), mC(2), mC(3))}, 'FontSize', 11);
 
