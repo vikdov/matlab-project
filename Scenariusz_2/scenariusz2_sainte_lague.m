@@ -51,7 +51,6 @@ fprintf('%-12s %12d %12d %12d\n','LACZNIE',sum(wyniki_dh),sum(wyniki_sl),sum(wyn
 % ---- Indeks Gallaghera ----
 glosy_n = partie_1922_dane/sum(partie_1922_dane)*100;
 fprintf('\n--- Indeks Gallaghera ---\n');
-for [w, lbl] = [wyniki_dh; wyniki_sl; wyniki_slz], end  % dummy — robimy recznie:
 metody = {wyniki_dh, wyniki_sl, wyniki_slz};
 etyk_g = {'D''Hondt (hist.)', 'Czysta S-L', 'Zmod. S-L'};
 for k=1:3
