@@ -1,21 +1,21 @@
 % =========================================================
-% DANE KOALICJI — Wybory parlamentarne w Polsce 1922
-% Używane przez podscenariusze A, B, C (Scenariusz 1)
+% DANE KOALICJI â€” Wybory parlamentarne w Polsce 1922
+% UĹĽywane przez podscenariusze A, B, C (Scenariusz 1)
 % =========================================================
 
-% Liczba mandatów per okrąg (64 okręgi, łącznie 372)
+% Liczba mandatĂłw per okrÄ…g (64 okrÄ™gi, Ĺ‚Ä…cznie 372)
 okregi_1922_mandaty = [14 5 4 4 6 4 4 5 5 5 5 6 7 6 6 7 6 5 7 5 6 5 6 6 4 6 5 5 5 4 5 6 5 4 4 5 6 5 5 7 4 8 7 6 7 6 7 6 6 4 7 6 9 10 9 5 6 5 5 5 6 7 5 6];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%  PODSCENARIUSZ A — Lewica vs reszta  %%%%
+%%%%%  PODSCENARIUSZ A â€” Lewica vs reszta  %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% PZL = koalicja lewicowa (PSL-P + PSL-W + PSL-L + PPS + NPR)
+% PZL = koalicja lewicowa (PSL-P + PSL-W + PSL-L + PPS + NPR + "BUND" + ChSR + KZPMiW)
 %
-% Uwaga: sumy głosów mogą nieznacznie odbiegać od 100% z powodu
-% zaokrągleń przy łączeniu list. Funkcja dhondt() normalizuje
-% wartości względnie, więc nie wpływa to na wynik podziału mandatów.
+% Uwaga: sumy gĹ‚osĂłw mogÄ… nieznacznie odbiegaÄ‡ od 100% z powodu
+% zaokrÄ…gleĹ„ przy Ĺ‚Ä…czeniu list. Funkcja dhondt() normalizuje
+% wartoĹ›ci wzglÄ™dnie, wiÄ™c nie wpĹ‚ywa to na wynik podziaĹ‚u mandatĂłw.
 
-partie_A      = {"ChZJN", "BMN", "PZL", "PC", "KZSN-Ż", "ZN-Ż", "ŻDBL", "Inni"};
+partie_A      = {"ChZJN", "BMN", "PZL", "PC", "KZSN-Ĺ»", "ZN-Ĺ»", "Ĺ»DBL", "Inni"};
 partie_A_dane = [29.12, 15.96, 44.20, 2.97, 2.01, 0.75, 0.61, 4.54];
 
 okregi_A_dane = [
@@ -87,9 +87,9 @@ okregi_A_dane = [
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%  PODSCENARIUSZ B — Lewica vs Mniejszości vs reszta %%%
+%%%%%  PODSCENARIUSZ B â€” Lewica vs MniejszoĹ›ci vs reszta %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% WMN = Wielki Blok Mniejszości Narodowych (BMN + KZSN-Ż + ZN-Ż + ŻDBL + KZPMiW + inne)
+% WMN = Wielki Blok MniejszoĹ›ci Narodowych (BMN + KZSN-Ĺ» + ZN-Ĺ» + Ĺ»DBL + inne)
 
 partie_B      = {"ChZJN", "PZL", "WMN", "PC"};
 partie_B_dane = [29.12, 44.20, 23.87, 2.97];
@@ -163,7 +163,7 @@ okregi_B_dane = [
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%  PODSCENARIUSZ C — Prawica vs Lewica vs Mniejszości %%
+%%%%%  PODSCENARIUSZ C â€” Prawica vs Lewica vs MniejszoĹ›ci %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PJN = koalicja prawicowo-centrowa (ChZJN + PC + NPR + inne)
 
