@@ -1,22 +1,23 @@
 % =========================================================
 % SCENARIUSZ KOALICJI A
-% Koalicja LEWICA vs pozostałe partie osobno
+% Koalicja LEWICA vs pozostaĹ‚e partie osobno
 % Plik: Scenariusz_1/scenariuszA_lewica_vs_reszta.m
 %
-% LEWICA (wspólna lista): PPS(5), NPR(6), PSL-P(3), PSL-W(4), PSL-L(13)
-% POZOSTAŁE partie startują każda osobno:
-%   ChZJN(1), BMN(2), PC(7), KZSN-Ż(8), KZPMiW(9), ChSR(10),
-%   Bund(11), ZN-Ż(12), ŻDBL(14)
-% Głosy "Inni" (kol. 15) pomijane.
-% Mandaty: D'Hondt okręgowo.
+% LEWICA (wspĂłlna lista): PPS(5), NPR(6), PSL-P(3), PSL-W(4), PSL-L(13),
+% 10 BUND, 11
+% POZOSTAĹE partie startujÄ… kaĹĽda osobno:
+%   ChZJN(1), BMN(2), PC(7), KZSN-Ĺ»(8), KZPMiW(9), ChSR(10),
+%   Bund(11), ZN-Ĺ»(12), Ĺ»DBL(14)
+% GĹ‚osy "Inni" (kol. 15) pomijane.
+% Mandaty: D'Hondt okrÄ™gowo.
 % =========================================================
 
 clear; clc;
 addpath('../wspolne');
 run('../wspolne/dane_1922.m');
 
-IDX_LEWICA    = [3, 4, 5, 6, 13];
-IDX_POZOSTALE = [1, 2, 7, 8, 9, 10, 11, 12, 14];
+IDX_LEWICA    = [3, 4, 5, 6, 10, 11, 13];
+IDX_POZOSTALE = [1, 2, 7, 8, 9, 12, 14];
 
 n_partii_plot = 1 + length(IDX_POZOSTALE);
 n_okregow     = length(okregi_1922_mandaty);
@@ -68,7 +69,7 @@ subplot(2,1,1);
 b = bar(1:n_partii_plot, wyniki_sort);
 b.FaceColor = 'flat'; b.CData = kolory;
 xticks(1:n_partii_plot); xticklabels(etyk_sort); xtickangle(40);
-ylabel('Mandaty'); title('Mandaty — Lewica (blok) vs pozostale partie','FontSize',11); grid on;
+ylabel('Mandaty'); title('Mandaty â€” Lewica (blok) vs pozostale partie','FontSize',11); grid on;
 
 subplot(2,1,2);
 bh = bar(1:n_partii_plot, [glosy_sort' mand_sort']);
