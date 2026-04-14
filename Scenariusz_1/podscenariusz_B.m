@@ -3,9 +3,9 @@
 % LEWICA (blok) vs MNIEJSZOSCI (blok) vs pozostale partie osobno
 % Plik: Scenariusz_1/scenariuszB_lewica_mniejszosci_reszta.m
 %
-% LEWICA (blok):      PSL-P(3), PSL-W(4), PPS(5), NPR(6), PSL-L(13)
-% MNIEJSZOSCI (blok): BMN(2), KZSN-Z(8), KZPMiW(9), Bund(11), ZN-Z(12), ZDBL(14)
-% POZOSTALE (osobno): ChZJN(1), PC(7), ChSR(10)
+% LEWICA (blok):      PSL-P(3), PSL-W(4), PPS(5), NPR(6), PSL-L(13), ChSR(10), Bund(11)
+% MNIEJSZOSCI (blok): BMN(2), KZSN-Z(8), KZPMiW(9), ZN-Z(12), ZDBL(14)
+% POZOSTALE (osobno): ChZJN(1), PC(7), 
 % Glosy "Inni" (kol.15) pomijane.
 % =========================================================
 
@@ -13,9 +13,9 @@ clear; clc;
 addpath('../wspolne');
 run('../wspolne/dane_1922.m');
 
-IDX_LEWICA      = [3, 4, 5, 6, 13];
-IDX_MNIEJSZOSCI = [2, 8, 9, 11, 12, 14];
-IDX_POZOSTALE   = [1, 7, 10];   % ChZJN, PC, ChSR — startuja osobno
+IDX_LEWICA      = [3, 4, 5, 6, 13, 10, 11];
+IDX_MNIEJSZOSCI = [2, 8, 9, 12, 14];
+IDX_POZOSTALE   = [1, 7];   % ChZJN, PC, ChSR â€” startuja osobno
 
 % Wektor "graczy": [lewica, mniejszosci, ChZJN, PC, ChSR]
 etykiety = [{'LEWICA (blok)'}, {'MNIEJSZOSCI (blok)'}, partie_1922(IDX_POZOSTALE)];
@@ -82,7 +82,7 @@ subplot(2,1,1);
 b = bar(1:n_graczy, wyniki_sort);
 b.FaceColor='flat'; b.CData=kolory;
 xticks(1:n_graczy); xticklabels(etyk_sort); xtickangle(40);
-ylabel('Mandaty'); title('Mandaty — bloki vs partie osobno','FontSize',11); grid on;
+ylabel('Mandaty'); title('Mandaty â€” bloki vs partie osobno','FontSize',11); grid on;
 
 subplot(2,1,2);
 bh = bar(1:n_graczy,[glosy_sort' mand_sort']);
